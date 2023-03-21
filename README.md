@@ -133,3 +133,22 @@ Then, in the Stocklist component:
   ```
   - we call to `fetchData`
   - we return an arrow function that sets again to the variable `isMounted` to false.
+
+### Rendering Table of Stocks
+
+Inside of the `StockList` component, return a  `<table>` and for styling use the bootstrap's classes.
+- the  `<thead>`:
+  ```
+   <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Chg</th>
+                        <th scope="col">Chg%</th>
+                        <th scope="col">High</th>
+                        <th scope="col">Low</th>
+                        <th scope="col">Open</th>
+                        <th scope="col">Pclose</th>
+                    </tr>
+                </thead>
+  ```

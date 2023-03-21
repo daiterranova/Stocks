@@ -39,6 +39,27 @@ export const StockList = () => {
     
     
     return (
-        <div>StockList component</div>
+        <div>
+            <table className="table hover mt-5">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Chg</th>
+                        <th scope="col">Chg%</th>
+                        <th scope="col">High</th>
+                        <th scope="col">Low</th>
+                        <th scope="col">Open</th>
+                        <th scope="col">Pclose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        stock.map
+                    }
+                </tbody>
+            </table>
+
+        </div>
     )
 }
