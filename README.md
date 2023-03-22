@@ -133,3 +133,78 @@ Then, in the Stocklist component:
   ```
   - we call to `fetchData`
   - we return an arrow function that sets again to the variable `isMounted` to false.
+
+### Rendering Table of Stocks
+
+Inside of the `StockList` component, return a  `<table>` and for styling use the bootstrap's classes.
+- the  `<thead>`:
+  ```
+   <thead className="thead-color">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Chg</th>
+                        <th scope="col">Chg%</th>
+                        <th scope="col">High</th>
+                        <th scope="col">Low</th>
+                        <th scope="col">Open</th>
+                        <th scope="col">Pclose</th>
+                    </tr>
+                </thead>
+  ```
+- the `<tbody>`
+  ```
+  stock.map((stockData) =>{
+                           return (
+                            <tr className="table-row" key={stockData.symbol}>
+                                <th scope="row">{stockData.symbol}</th>
+                                <td>{stockData.data.c}</td>
+                                <td>{stockData.data.d}</td>
+                                <td>{stockData.data.dp}</td>
+                                <td>{stockData.data.h}</td>
+                                <td>{stockData.data.l}</td>
+                                <td>{stockData.data.o}</td>
+                                <td>{stockData.data.pc}</td>
+                            </tr>
+                           )
+                        })
+  ```
+
+We add the class `thead-color` inside of the `index.css` file in order to change the default color of the table:
+```
+.thead-color{
+    color: rgb(79, 89, 102);
+} 
+```
+
+#### Set color for changes columns
+
+To show the change columns in green when the change is rising or red with the change is decreasing, we will create a function that applies a bootstrap's color text class depending on the value of `change`:
+```
+   const changeColor = (change) => {
+       return change > 0 ? "success" : "danger"
+    }
+```
+On both rows:
+
+```
+ <td className={`text-${changeColor(stockData.data.d)}`}>{stockData.data.d}</td>
+ <td className={`text-${changeColor(stockData.data.dp)}`}>{stockData.data.dp}</td>
+```
+#### Adding bootstrap icons
+
+Install `react-icons` dependency:
+
+```
+npm install react-icons --save
+```
+
+Once installed, go to [Bootstrap Icons](https://react-icons.github.io/react-icons/icons?name=bs), copy the name of the two icons that we need, and import them in the `StockList` file:
+```
+import { BsFillCaretUpFill, BsFillCaretDownFill} from "react-icons/bs"
+```
+And now we will create another function to render the proper icon depending on the change status: if goes down, we return `<BsFillCaretDownFill>`, if goes up `<BsFillCaretUpFill>`.
+
+```
+const renderIcon = (change) => change > 0 ? <BsFillCaretUpFill/> : <BsFillCaretDownFill/>;
+```

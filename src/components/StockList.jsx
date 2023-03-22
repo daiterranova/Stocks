@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react"
 import finnHub from "../apis/finnHub"
+import { BsFillCaretUpFill, BsFillCaretDownFill} from "react-icons/bs"
 
 export const StockList = () => {
     const [stock, setStock] = useState([])
     const [watchList, setWatchList] = useState(["GOOGL", "MSFT", "AMZN"])
     
+    const changeColor = (change) =>  change > 0 ? "success" : "danger";
+
+    const renderIcon = (change) => change > 0 ? <BsFillCaretUpFill/> : <BsFillCaretDownFill/>;
+
     useEffect(() => {
         let isMounted = true;
         const fetchData = async () => {
@@ -39,6 +44,39 @@ export const StockList = () => {
     
     
     return (
-        <div>StockList component</div>
+        <div>
+            <table className="table hover mt-5">
+                <thead className="thead-color">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Chg</th>
+                        <th scope="col">Chg%</th>
+                        <th scope="col">High</th>
+                        <th scope="col">Low</th>
+                        <th scope="col">Open</th>
+                        <th scope="col">Pclose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        stock.map((stockData) =>{
+                           return (
+                            <tr className="table-row" key={stockData.symbol}>
+                                <th scope="row">{stockData.symbol}</th>
+                                <td>{stockData.data.c}</td>
+                                <td className={`text-${changeColor(stockData.data.d)}`}>{stockData.data.d}{renderIcon(stockData.data.d)}</td>
+                                <td className={`text-${changeColor(stockData.data.dp)}`}>{stockData.data.dp}{renderIcon(stockData.data.d)}</td>
+                                <td>{stockData.data.h}</td>
+                                <td>{stockData.data.l}</td>
+                                <td>{stockData.data.o}</td>
+                                <td>{stockData.data.pc}</td>
+                            </tr>
+                           )
+                        })
+                    }
+                </tbody>
+            </table>
+        </div>
     )
 }
