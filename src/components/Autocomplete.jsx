@@ -3,8 +3,34 @@ import finnHub from "../apis/finnHub"
 
 export const Autocomplete = () => {
     const [search, setSearch] = useState("")
+    const [results, setResults] = useState([])
+
+    const renderDropDown = () => {
+        const dropDownClass = search ? "show" : null
+        return (
+            <ul style={{
+                height: "500px",
+                overflowY: "scroll",
+                overflowX: "hidden",
+                cursor: "pointer"
+            }}
+                className={`dropdown-menu ${dropDownClass}`}>
+                {
+                    results.map((result) => {
+                        console.log(result)
+                        return (
+                            < li key={result.symbol} className="dropdown-item" >
+                                {result.description}  ({result.symbol})
+                            </li>
+                        )
+                    })
+                }
+            </ul >
+        )
+    }
 
     useEffect(() => {
+        let isMounted = true
         const fetchData = async () => {
             try {
                 const response = await finnHub.get("/search", {
@@ -12,6 +38,9 @@ export const Autocomplete = () => {
                         q: search
                     }
                 })
+                if (isMounted) {
+                    setResults(response.data.result)
+                }
             }
             catch (err) {
 
@@ -19,6 +48,9 @@ export const Autocomplete = () => {
         }
         if (search.length > 0) {
             fetchData()
+        }
+        else {
+            setResults([])
         }
 
     }, [search])
@@ -29,11 +61,7 @@ export const Autocomplete = () => {
                 <input style={{ backgroundColor: 'rgba(145, 158, 171, 0.04)' }}
                     id="search" type="text" className="form-control" placeholder="Search" autoComplete="off" value={search} onChange={(e) => setSearch(e.target.value)}></input>
                 <label htmlFor="search">Search</label>
-                <ul className="dropdown-menu">
-                    <li>stock1</li>
-                    <li>stock2</li>
-                    <li>stock3</li>
-                </ul>
+                {renderDropDown()}
             </div>
         </div>
     )
