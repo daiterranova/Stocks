@@ -208,3 +208,149 @@ And now we will create another function to render the proper icon depending on t
 ```
 const renderIcon = (change) => change > 0 ? <BsFillCaretUpFill/> : <BsFillCaretDownFill/>;
 ```
+
+### Autocomplete Search Component
+
+Create the basic structure of the component:
+
+```
+<div>
+  <div>
+    <input>
+    <label>
+    <ul>
+      <li>
+      <li>
+      <li>
+    <ul>
+  </div> 
+</div>
+```
+For styling, we will using bootstrap's classes to create a controlled form:
+
+```
+<div className="w-50 p-5 rounded mx-auto">
+            <div className="form-floating dropdown">
+                <input style={{backgroundColor: 'rgba(145, 158, 171, 0.04)'}}
+                id="search" type="text" className="form-control" placeholder="Search" autoComplete="off" value={search} onChange={(e) => setSearch(e.target.value)}></input>
+                <label htmlFor="search">Search</label>
+                <ul className="dropdown-menu">
+                    <li>stock1</li>
+                    <li>stock2</li>
+                    <li>stock3</li>
+                </ul>
+            </div>
+        </div>
+```
+#### Fetch data for dropdown menu
+
+Simmilar to the `<Stocklist/>` component, we'll create a useEffect to fetch the data using the baseURL + `'/search'` as the endpoint, and as the second parameter, we will pass the object params that receives the value of search (giving by the user)
+
+```
+const response = await finnHub.get("/search", {
+                    params: {
+                        q: search
+                    }
+                })
+```
+Once we get the response, we establish the condition to set that data on our results state variable only when the component is mounted.
+
+```
+ try {
+                const response = await finnHub.get("/search", {
+                    params: {
+                        q: search
+                    }
+                })
+                if (isMounted) {
+                    setResults(response.data.result)
+                }
+            }
+            catch (err) {
+
+            }
+```
+In addition, we establish that we only fetch the data when search has some value, if is not, we reset the state to an empty array.
+
+```
+if (search.length > 0) {
+            fetchData()
+        }
+        else {
+            setResults([])
+        }
+```
+
+Finally, this useEffect will be executed only when the value of `search` changes, so we pass to the hook search as a second parameter.
+
+Our code will be looking like this:
+
+```
+    useEffect(() => {
+        let isMounted = true
+        const fetchData = async () => {
+            try {
+                const response = await finnHub.get("/search", {
+                    params: {
+                        q: search
+                    }
+                })
+                if (isMounted) {
+                    setResults(response.data.result)
+                }
+            }
+            catch (err) {
+
+            }
+        }
+        if (search.length > 0) {
+            fetchData()
+        }
+        else {
+            setResults([])
+        }
+
+    }, [search])
+```
+
+#### Render dropdown results
+
+For render the dropdown menu, we'll be using a function that will assign a class based on the value of `search`. 
+
+Define a variable that stores which class will be assigned is search is true or false.
+
+``` 
+const dropDownClass = search ? "show" : null
+```
+
+Return the list, mapping the results with the description and the symbol value for every stock:
+
+```
+return (
+            <ul style={{
+                height: "500px",
+                overflowY: "scroll",
+                overflowX: "hidden",
+                cursor: "pointer"
+            }}
+                className={`dropdown-menu ${dropDownClass}`}>
+                {
+                    results.map((result) => {
+                        console.log(result)
+                        return (
+                            < li key={result.symbol} className="dropdown-item" >
+                                {result.description}  ({result.symbol})
+                            </li>
+                        )
+                    })
+                }
+            </ul >
+        )
+```
+Call the function `renderDropDown` in the return of the component.
+
+``` 
+  {renderDropDown()}
+```
+
+
