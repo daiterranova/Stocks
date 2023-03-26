@@ -10,6 +10,7 @@ export const StockList = () => {
 
     const renderIcon = (change) => change > 0 ? <BsFillCaretUpFill /> : <BsFillCaretDownFill />;
 
+
     useEffect(() => {
         let isMounted = true;
         const fetchData = async () => {
@@ -28,7 +29,6 @@ export const StockList = () => {
                     }
 
                 })
-                console.log(data)
                 if (isMounted) {
                     setStock(data)
                 }
@@ -39,7 +39,7 @@ export const StockList = () => {
         }
         fetchData()
         return () => (isMounted = false)
-    }, [])
+    }, [watchList])
 
 
     return (
