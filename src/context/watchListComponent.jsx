@@ -7,13 +7,9 @@ export const WatchListContextProvider = ({ children }) => {
 
     const [watchList, setWatchList] = useState(["GOOGL", "MSFT", "AMZN"]);
     const addStock = (stock) => {
-        if (watchList.indexOf(stock) === -1) {
+        if (!watchList.includes(stock)) {
             setWatchList([...watchList, stock])
-            console.log(stock)
         }
-        /* if (!watchList.includes(stock)) {
-            setWatchList([...watchList, stock])
-        } */
     }
     const deleteStock = (stock) => {
         const filteredList = watchList.filter((el) => {
