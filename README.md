@@ -354,3 +354,103 @@ Call the function `renderDropDown` in the return of the component.
 ```
 
 
+### Context API
+
+Because we want that everytime the user searchs for a stock and it is displayed on the dropdown menu, when the user clicks the stock, it must be added to the stocklist. 
+To communicate both components ( `Autocomplete`  and `StockList`), we'll create a component `Provider`, giving it access to information so he can passes to other components as a props.
+
+- In the **src** folder's menu, create a folder called **context**.
+- Inside of it, create a new file component: `watchListComponent.jsx`.
+- Import from React's Library `{createContext}` and create the context:
+
+```
+export const watchListContext = createContext();
+```
+- Then, create a provider component  and return the context using the provider component as a wrapper:
+```
+export const WatchListContextProvider = ({  }) => {
+    return (
+        <WatchListContext.Provider >
+        </WatchListContext.Provider>
+    )
+}
+```
+We pass to our component the `children` props, so we can render any component or element that our passed in as a child.
+In our case, we want to access to the WatchList from the StockList component. So, we put it inside of the Provider and pass it as a value
+
+```
+export const WatchListContextProvider = ({ children }) => {
+
+    const [watchList, setWatchList] = useState(["GOOGL", "MSFT", "AMZN"]);
+
+    return (
+        <WatchListContext.Provider value={watchList}>
+            {children}
+        </WatchListContext.Provider>
+    )
+}
+```
+
+- In the App.js file, wrap the entire App with the Provider component:
+
+```
+<main className="container">
+      <WatchListContextProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<StockOverviewPage />} />
+            <Route path="/detail/:symbol" element={<StockDetailPage />} />
+          </Routes>
+        </BrowserRouter>
+      </WatchListContextProvider>
+    </main>
+```
+
+- In the StockList component, import the `useContext` hook and using destructuring grab the value of watchList making use of the hook:
+
+```
+const { watchList } = useContext(WatchListContext);
+```
+
+#### Adding stock
+
+When the user make a search on the search input, and we show the matches on the dropdown menu, if the user clicks on one of the results, we want to added it to the stock list.
+So, create a function to handle the onClick event that we'll be setting on the element `<li>` of our dropdown menu.
+
+```
+ const addStock = (stock) => {
+        if (!watchList.includes(stock)) {
+            setWatchList([...watchList, stock])
+        }
+    }
+```
+Let's breaking in this down:
+
+* `stock` represents the result selected by the user when clicks on it.
+* if the list doesn't includes this result, then we added it to the list, setting the watchList variable with the content of the current list plus the result selected.
+
+In the Autocomplete component, we add the onClick event listener:
+
+```
+ < li key={result.symbol} className="dropdown-item" onClick={() => {
+                                addStock(result.symbol)
+                                setSearch("")
+                            }}
+```
+Note: we set again the search variable to an empty string because after the user clicks on the result and this one is added to the table, we want to close the dropdown menu, and we achieve returning the state as it was at the beginning.
+
+#### Delete stock
+
+For now, we only create the function to eliminate an stock from the list:
+
+```
+ const deleteStock = (stock) => {
+        const filteredList = watchList.filter((el) => {
+            return el !== stock
+        })
+        setWatchList(filteredList)
+    }
+```
+
+Using the `filter` method for arrays, we go through the watchList array and returned it that list except the stock that was selected for deletion.
+We render this new filtered list passing the new array to the watchList variable to `setWatchList`
