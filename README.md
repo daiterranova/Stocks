@@ -491,7 +491,7 @@ First, import `useParams` hook to extract the **symbol**:
 const { symbol } = useParams()
 ```
 
-After, we implement a **useEffect** hook to fetch the data:
+Then, we implement a **useEffect** hook to fetch the data:
 
 - Create a date object ``` const date = new Date() ```
 - Get the current time ```const currentTime = Math.floor(date.getTime() / 1000)````
