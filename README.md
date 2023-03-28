@@ -452,7 +452,7 @@ For now, we only create the function to eliminate a stock from the list:
     }
 ```
 
-Using the `filter` method, we go through the watchList array and returned it excepting of the selected stock.
+Using the `filter` method, we go through the watchList array and return it except of the selected stock.
 We set the value of the `watchList` variable to this new filtered list.
 
 ### useNavigate Hook
