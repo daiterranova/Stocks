@@ -457,7 +457,7 @@ We set the value of the `watchList` variable to this new filtered list.
 
 ### useNavigate Hook
 
-When the user clicks on a row, we want to re-directed to the detail of the stock.
+When the user clicks on a row, we want to be re-directed to the detail of the stock.
 In order to achieve it, we import the `useNavigate` hook on `StockList` component, and inside of the function, we store the hook in a varible:
 
 ```
