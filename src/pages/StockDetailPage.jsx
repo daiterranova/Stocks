@@ -3,7 +3,14 @@ import { useEffect, useState } from "react"
 import finnHub from "../apis/finnHub"
 
 
-const formatData = () => {
+const formatData = (data) => {
+    return data.t.map((el, index) => {
+        console.log(`x: ${el * 1000}`)
+        return {
+            x: el * 1000,
+            y: data.c[index]
+        }
+    })
 
 }
 
@@ -62,15 +69,23 @@ export const StockDetailPage = () => {
                     week: formatData(responses[1].data),
                     year: formatData(responses[2].data)
                 })
-
             }
             catch (err) {
 
             }
         }
         fetchData()
-    }, [])
+    }, [symbol])
 
 
     return <div>StockDetailPage {symbol}</div>
-} 
+}
+
+/* 
+const data = [{x: 4, y: 2}, {x: 4, y: 2}]
+Response Attributes:
+c
+List of close prices for returned candles.
+t
+List of timestamp for returned candles.
+ */
