@@ -5,7 +5,6 @@ import finnHub from "../apis/finnHub"
 
 const formatData = (data) => {
     return data.t.map((el, index) => {
-        console.log(`x: ${el * 1000}`)
         return {
             x: el * 1000,
             y: data.c[index]
