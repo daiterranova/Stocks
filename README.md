@@ -508,7 +508,7 @@ if (day === 6) { // saturday
                 oneDay = currentTime - 24 * 60 * 60
             }
 ```
-- Using **Promise.all** and taking into account the finnhub endpoint for the [stock candles](https://finnhub.io/docs/api/stock-candles), we get the data that we need hitting to the **/stock/candle's endpoint** as the first parameter, and as the second one, the object params with the required arguments (symbol,from,to,resolution). We fetch three request for obtain the historical data of a day, a week and a year.
+- Using **Promise.all** and taking into account the finnhub endpoint for the [stock candles](https://finnhub.io/docs/api/stock-candles), we get the data that we need hitting to the **/stock/candle's endpoint** as the first parameter, and as the second one, the object params with the required arguments (symbol,from,to,resolution). We fetch three requests to obtain the historical data of a day, a week and a year.
 
 ```
 
