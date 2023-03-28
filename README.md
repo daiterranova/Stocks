@@ -542,7 +542,7 @@ if (day === 6) { // saturday
 ```
 #### Formatting data
 
-Now  that we have the responses we need, we stored it on a new state variable `chartData`, and inside of the useEffect we set the variable with an object with the properties day,week and year, and each one of them call the **formatData** function that receives the data property for every request made it.
+Now  that we have the responses we need, we store them on a new state variable `chartData`, and inside of the useEffect we set the variable with an object with the properties day,week and year, and each one of them calls the **formatData** function that receives the data property for every request made it.
 
 Outside of the StockDetailPage component, we create the formatData function:
 
