@@ -495,7 +495,7 @@ Then, we implement a **useEffect** hook to fetch the data:
 
 - Create a date object ``` const date = new Date() ```
 - Get the current time ```const currentTime = Math.floor(date.getTime() / 1000)````
-- Establish the neccesary conditions for contemplate the weekend days when there's no new quotes. 
+- Establish the necessary conditions to contemplate the weekend days when there are no new quotes. 
 
 ```
 if (day === 6) { // saturday
