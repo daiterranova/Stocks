@@ -441,7 +441,7 @@ Note: we set again the search variable to an empty string because after the user
 
 #### Delete stock
 
-For now, we only create the function to eliminate an stock from the list:
+For now, we only create the function to eliminate a stock from the list:
 
 ```
  const deleteStock = (stock) => {
@@ -452,5 +452,111 @@ For now, we only create the function to eliminate an stock from the list:
     }
 ```
 
-Using the `filter` method for arrays, we go through the watchList array and returned it that list except the stock that was selected for deletion.
-We render this new filtered list passing the new array to the watchList variable to `setWatchList`
+Using the `filter` method, we go through the watchList array and return it except of the selected stock.
+We set the value of the `watchList` variable to this new filtered list.
+
+### useNavigate Hook
+
+When the user clicks on a row, we want to be re-directed to the detail of the stock.
+In order to achieve it, we import the `useNavigate` hook on `StockList` component, and inside of the function, we store the hook in a varible:
+
+```
+import { useNavigate } from "react-router-dom"
+
+const navigate = useNavigate();
+
+``` 
+
+Then, we create a handle function that receives the symbol of the stock and, with it, we call the hook passing the route based on the correspondent symbol:
+
+```
+ const handleStockSelect = (symbol) => {
+        navigate(`detail/${symbol}`)
+    }
+```
+Finally, pass the handle function inside of the row's stock:
+
+```
+<tr style={{ cursor: "pointer" }} onClick={() => handleStockSelect(stockData.symbol)} className="table-row" key={stockData.symbol}>
+```
+
+
+### Fetching historical data
+
+Inside of the `StockDetailPage` component:
+
+First, import `useParams` hook to extract the **symbol**:
+
+```
+const { symbol } = useParams()
+```
+
+Then, we implement a **useEffect** hook to fetch the data:
+
+- Create a date object ``` const date = new Date() ```
+- Get the current time ```const currentTime = Math.floor(date.getTime() / 1000)````
+- Establish the necessary conditions to contemplate the weekend days when there are no new quotes. 
+
+```
+if (day === 6) { // saturday
+                oneDay = currentTime - 2 * 24 * 60 * 60
+            }
+            else if (day === 0) { //sunday
+                oneDay = currentTime - 3 * 24 * 60 * 60
+            }
+            else {
+                oneDay = currentTime - 24 * 60 * 60
+            }
+```
+- Using **Promise.all** and taking into account the finnhub endpoint for the [stock candles](https://finnhub.io/docs/api/stock-candles), we get the data that we need hitting to the **/stock/candle's endpoint** as the first parameter, and as the second one, the object params with the required arguments (symbol,from,to,resolution). We fetch three requests to obtain the historical data of a day, a week and a year.
+
+```
+
+            try {
+                const responses = await Promise.all([
+                    finnHub.get("/stock/candle", {
+                        params: {
+                            symbol,
+                            from: oneDay,
+                            to: currentTime,
+                            resolution: 30
+                        }
+                    }),
+                    finnHub.get("/stock/candle", {
+                        params: {
+                            symbol,
+                            from: oneWeek,
+                            to: currentTime,
+                            resolution: 60
+                        }
+                    }),
+                    finnHub.get("/stock/candle", {
+                        params: {
+                            symbol,
+                            from: oneYear,
+                            to: currentTime,
+                            resolution: "M"
+                        }
+                    })
+                ])
+```
+#### Formatting data
+
+Now  that we have the responses we need, we store them on a new state variable `chartData`, and inside of the useEffect we set the variable with an object with the properties day,week and year, and each one of them calls the **formatData** function that receives the data property for every request made it.
+
+Outside of the StockDetailPage component, we create the formatData function:
+
+```
+const formatData = (data) => {
+    return data.t.map((el, index) => {
+        return {
+            x: el * 1000,
+            y: data.c[index]
+        }
+    })
+
+}
+``` 
+The previous function mapping through the `data.t` property (corresponding to the timestamp of the stock) takes every timestamp and multiplies it for 1000 (because the API receives the time on miliseconds), and then assigns to the `x` property on the returned object. Overmore, the `y` property on the same object, receives as a value the `data.c` (corresponding to the close price) accordingly to the index that is being mapped.
+
+So, we create an object that matches the timestamp with the closest price of the stock requested, and within this format, we set the state variable `chartData` consider the period of time is pretend to show (a day, a week or a year).
