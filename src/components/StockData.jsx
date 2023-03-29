@@ -64,15 +64,14 @@ export const StockData = ({ symbol }) => {
                             <span className="fw-bold">MarketCap: </span>
                             {stockData.marketCapitalization}
                         </div>
-
-                    </div>
-                    <div>
-                        <span className="fw-bold">Shares Outstanding: </span>
-                        {stockData.shareOutstanding}
-                    </div>
-                    <div>
-                        <span className="fw-bold">url: </span>
-                        <a href={stockData.weburl}>{stockData.weburl}</a>
+                        <div>
+                            <span className="fw-bold">Shares Outstanding: </span>
+                            {stockData.shareOutstanding}
+                        </div>
+                        <div>
+                            <span className="fw-bold">url: </span>
+                            <a href={stockData.weburl}>{stockData.weburl}</a>
+                        </div>
                     </div>
                 </div>
             )
