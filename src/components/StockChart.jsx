@@ -5,7 +5,26 @@ import Chart from "react-apexcharts"
 export const StockChart = ({ chartData, symbol }) => {
     const { day, week, year } = chartData
     const [dateFormat, setDateFormat] = useState('24h')
+
+    const determineTimeFormat = () => {
+        switch (dateFormat) {
+            case "24h":
+                return day;
+            case "7D":
+                return week;
+            case "1Y":
+                return year;
+            default:
+                return day;
+        }
+    }
+    const color = determineTimeFormat()[determineTimeFormat().length - 1].y - determineTimeFormat()[0].y > 0 ? "#00FF00" : "#FF0000"
+
+
+    console.log(color)
+
     const options = {
+        colors: [color],
         title: {
             text: symbol,
             align: "center",
@@ -31,18 +50,7 @@ export const StockChart = ({ chartData, symbol }) => {
             }
         }
     }
-    const determineTimeFormat = () => {
-        switch (dateFormat) {
-            case "24h":
-                return day;
-            case "7D":
-                return week;
-            case "1Y":
-                return year;
-            default:
-                return day;
-        }
-    }
+
 
     const series = [{
         name: symbol,
