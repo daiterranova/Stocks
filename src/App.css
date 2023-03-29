@@ -1,7 +1,7 @@
-.delete-button{
-    visibility: hidden;
+.delete-button {
+  visibility: hidden;
 }
 
 .table-row:hover .delete-button {
-    visibility: visible;
-  }
+  visibility: visible;
+}
