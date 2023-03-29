@@ -19,10 +19,6 @@ export const StockChart = ({ chartData, symbol }) => {
         }
     }
     const color = determineTimeFormat()[determineTimeFormat().length - 1].y - determineTimeFormat()[0].y > 0 ? "#00FF00" : "#FF0000"
-
-
-    console.log(color)
-
     const options = {
         colors: [color],
         title: {
