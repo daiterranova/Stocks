@@ -560,3 +560,171 @@ const formatData = (data) => {
 The previous function mapping through the `data.t` property (corresponding to the timestamp of the stock) takes every timestamp and multiplies it for 1000 (because the API receives the time on miliseconds), and then assigns to the `x` property on the returned object. Overmore, the `y` property on the same object, receives as a value the `data.c` (corresponding to the close price) accordingly to the index that is being mapped.
 
 So, we create an object that matches the timestamp with the closest price of the stock requested, and within this format, we set the state variable `chartData` consider the period of time is pretend to show (a day, a week or a year).
+
+### Creating chart
+
+We'll been using the [Apex Charts Library](https://apexcharts.com/) for showing the graph of the selected stock, implementing the integration for [React Charts](https://apexcharts.com/docs/react-charts/).
+
+First, install the following dependencies:
+
+``` 
+npm install apexcharts
+```
+
+```
+npm install --save react-apexcharts apexcharts
+```
+
+Then, create a new file and component called `StockChart.jsx`.
+
+Import the `Chart` component from react-apexcharts.
+
+Destructure the properties `day, week and year` from the `chartData` variable.
+
+Now, we'll customize the chart based on what we want to render:
+
+- title
+- chart
+- colors
+- date format 
+
+```
+ const options = {
+        //colors: [color],
+        title: {
+            text: symbol,
+            align: "center",
+            style: {
+                fontSize: "24px"
+            }
+        },
+        chart: {
+            id: "stock data",
+            animations: {
+                speed: 1300
+            }
+        },
+        xaxis: {
+            type: "datetime",
+            labels: {
+                datetimeUTC: false
+            }
+        },
+        tooltip: {
+            x: {
+                format: "MMM dd HH:MM"
+            }
+        }
+    }
+```    
+Note: we'll configurate color to show the corresponding color depending on whether the stock goes up or down. For now we leave the line of code commented.
+
+For additional information, you can go to the docs for options in the [apexcharts's web page](https://apexcharts.com/docs/options/).
+
+Return the `Chart` component and pass it the **options** property with the value of **options** object.
+
+Now we'll create the buttons so the user can choose between different periods of historical data's stock.
+
+ ```
+ <div>
+            <button>24 hs</button>
+            <button>7 days</button>
+            <button>1 Year</button>
+ </div>
+```
+When the user clicks on one of them, we want to display the proper data. Therefore, we can create a function to determine which information is shown.
+
+Before of our function, create a state variable `dateFormat` and initialize it with a value of **'24hs'**.
+
+Now on the `onClick` method of every button, set the state of the dateFormat variable with the value of every period of time:
+
+```
+<div>
+            <button onClick={() => { setDateFormat("24h") }}>24 hs</button>
+            <button onClick={() => { setDateFormat("7D") }}>7 days</button>
+            <button onClick={() => { setDateFormat("1Y") }}>1 Year</button>
+        </div>
+```
+
+Now we evaluate every case with a switch statement:
+
+```
+    const determineTimeFormat = () => {
+        switch (dateFormat) {
+            case "24h":
+                return day;
+            case "7D":
+                return week;
+            case "1Y":
+                return year;
+            default:
+                return day;
+        }
+    }
+```
+
+Create the object `series` with the following properties:
+
+```
+  const series = [{
+        name: symbol,
+        data: determineTimeFormat()
+    }]
+```
+And pass it to the `Chart` component.
+
+```
+ <Chart options={options} series={series} type="area" width="100%" />
+```
+
+For the color of the buttons, we make this function:
+
+```
+    const renderButtonSelect = (button) => {
+        const classes = "btn m-1 "
+        if (button === dateFormat) {
+            return classes + "btn-primary"
+        } else {
+            return classes + "btn-outline-primary"
+        }
+    }
+```
+And pass it to every button:
+
+```
+ <div>
+            <button className={renderButtonSelect("24h")} onClick={() => { setDateFormat("24h") }}>24 hs</button>
+            <button className={renderButtonSelect("7d")} onClick={() => { setDateFormat("7D") }}>7 days</button>
+            <button className={renderButtonSelect("1y")} onClick={() => { setDateFormat("1Y") }}>1 Year</button>
+```
+
+`renderButtonSelect` asigns to all the buttons the bootstrap's classes `btn m-1` and, according to which button is active selected (what is defined by the value of dateFormat("24h, 7d or 1y")), add the class `btn-primary` or `btn-outline-primary`.
+
+
+For the color of the graph area depending on the value of the stock:
+
+```
+    const color = determineTimeFormat()[determineTimeFormat().length - 1].y - determineTimeFormat()[0].y > 0 ? "#00FF00" : "#FF0000"
+```
+Let's break it down this logic:
+
+- `determineTimeFormat()` returns the object `day, year or week` depending on the value that receives from `dateFormat`. 
+
+- For every period (day, week or year), to determine if the stock is going down or up, we can compare the oldest input with the newest input. So, we grab the newest value with `determineTimeFormat()[determineTimeFormat().length - 1].y` and compare it against the oldest value of the array `determineTimeFormat()[0].y` 
+
+```
+determineTimeFormat()[determineTimeFormat().length - 1].y - determineTimeFormat()[0].y
+```
+- With a ternary operator we evaluate if the result of the statement is greater than 0 (goes up), return **green color**; else, return **red color** 
+
+```
+    const color = determineTimeFormat()[determineTimeFormat().length - 1].y - determineTimeFormat()[0].y > 0 ? "#00FF00" : "#FF0000"
+```
+
+Now, we can uncommented the line inside of the **options** object:
+
+```
+const options = {
+        colors: [color]
+```
+
