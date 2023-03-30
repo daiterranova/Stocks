@@ -857,7 +857,7 @@ Now that we have the data, we return a row using bootstrap's classes for styling
 
 Bear in mind that this table is shown when there's data (that means when `stockData` is true).
 
-Following, import the component on the `StockDetailPage` component and returned it like this:
+Following, import the component on the `StockDetailPage` component and return it like this:
 
 ```
     <StockData symbol={symbol} />
