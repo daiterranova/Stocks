@@ -771,7 +771,7 @@ const options = {
 
 ### Stock Data component
 
-In the `StockDetailPage`, besides the stock chart, we want to show additional information of the selected stock.
+In the `StockDetailPage`, besides the stock chart, we want to show additional information on the selected stock.
 
 In order to do that, create a new component `<StockData/>` that receives the `symbol` prop.
 
