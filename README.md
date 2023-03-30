@@ -768,3 +768,108 @@ Now, we can uncomment the line inside of the **options** object:
 const options = {
         colors: [color]
 ```
+
+### Stock Data component
+
+In the `StockDetailPage`, besides the stock chart, we want to show additional information on the selected stock.
+
+In order to do that, create a new component `<StockData/>` that receives the `symbol` prop.
+
+Inside of it, create a useEffect hook for fetch the data from the finnHub API, following the instructions of the section [Company Profile 2](https://finnhub.io/docs/api/company-profile2)
+
+```
+    useEffect(() => {
+        let isMounted = true;
+        const fetchData = async () => {
+            try {
+                const response = await finnHub.get("stock/profile2", {
+                    params: {
+                        symbol
+                    }
+                })
+                if (isMounted) {
+                    setStockData(response.data)
+                }
+            }
+            catch (err) {
+                console.log(err)
+            }
+        }
+        fetchData()
+        return () => (isMounted = false)
+    }, [symbol])
+```
+
+#### Considerations:
+
+- We want that this useEffect executes every time that `symbol` changes, therefore, we pass it the prop as a second parameter.
+- We store the response in a state variable called `stockData`, through the `setStockData` function only when isMounted is true, so we only fetch the date when the component is mounted.
+- isMounted changes its value to false when the component is unmounted.
+
+Now that we have the data, we return a row using bootstrap's classes for styling:
+
+```
+ <div className="row border bg-white rounded shadow-sm p-4 mt-5">
+                    <div className="col">
+                        <div>
+                            <span className="fw-bold">name: </span>
+                            {stockData.name}
+                        </div>
+                        <div>
+                            <span className="fw-bold">country: </span>
+                            {stockData.country}
+                        </div>
+                        <div>
+                            <span className="fw-bold">ticker: </span>
+                            {stockData.ticker}
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div>
+                            <span className="fw-bold">Exchange: </span>
+                            {stockData.exchange}
+                        </div>
+                        <div>
+                            <span className="fw-bold">Industry: </span>
+                            {stockData.finnhubIndustry}
+                        </div>
+                        <div>
+                            <span className="fw-bold">IPO: </span>
+                            {stockData.ipo}
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div>
+                            <span className="fw-bold">MarketCap: </span>
+                            {stockData.marketCapitalization}
+                        </div>
+                        <div>
+                            <span className="fw-bold">Shares Outstanding: </span>
+                            {stockData.shareOutstanding}
+                        </div>
+                        <div>
+                            <span className="fw-bold">url: </span>
+                            <a href={stockData.weburl}>{stockData.weburl}</a>
+                        </div>
+                    </div>
+                </div>
+```
+
+Bear in mind that this table is shown when there's data (that means when `stockData` is true).
+
+Following, import the component on the `StockDetailPage` component and return it like this:
+
+```
+    <StockData symbol={symbol} />
+```
+
+### Logo image
+
+Finally, in our `StockOverviewPage` file, import the **trading** logo `import img from "../images/trading.jpg" ` and return it inside of the component:
+
+```
+ return <div>
+    <div className="text-center">
+      <img src={img} width="400" />
+    </div>
+```
