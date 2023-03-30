@@ -5,7 +5,7 @@ import img from "../images/trading.jpg"
 export const StockOverviewPage = () => {
   return <div>
     <div className="text-center">
-      <img src={img} width="400" />
+      <img src={img} />
     </div>
     <Autocomplete />
     <StockList />
